@@ -3,10 +3,12 @@ const express = require("express");
 const http = require("http");
 const app = express();
 const servidor = http.createServer(app);
+const cors = require("cors");
 
 //Inicializamos socketio
 const socketio = require("socket.io");
 const io = socketio(servidor);
+app.use(cors())
 
 app.get("/", (req, res) => res.send("Home Page Chat"));
 

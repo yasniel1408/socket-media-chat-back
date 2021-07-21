@@ -1,41 +1,37 @@
 //Servidor con express
-const express = require("express");
-const http = require("http");
-const app = express();
-const servidor = http.createServer(app);
+var express = require("express");
+var app = express();
+const path = require("path");
+const http = require("http").Server(app);
 const cors = require("cors");
 
 //Inicializamos socketio
-const socketio = require("socket.io");
-const io = socketio(servidor);
-app.use(cors())
-
-app.get("/", (req, res) => res.send("Home Page Chat"));
-
-//Funcionalidad de socket.io en el servidor
-io.on("connection", (socket) => {
-  let nombre;
-
-  socket.on("conectado", (nomb) => {
-    nombre = nomb;
-    //socket.broadcast.emit manda el mensaje a todos los clientes excepto al que ha enviado el mensaje
-    socket.broadcast.emit("mensajes", {
-      nombre: nombre,
-      mensaje: `${nombre} ha entrado en la sala del chat`,
-    });
-  });
-
-  socket.on("mensaje", (nombre, mensaje) => {
-    //io.emit manda el mensaje a todos los clientes conectados al chat
-    io.emit("mensajes", { nombre, mensaje });
-  });
-
-  socket.on("disconnect", () => {
-    io.emit("mensajes", {
-      servidor: "Servidor",
-      mensaje: `${nombre} ha abandonado la sala`,
-    });
-  });
+const io = require("socket.io")(http, {
+  cors: {
+    origin: "*",
+  },
 });
 
-servidor.listen(5000, () => console.log("Servidor inicializado"));
+require("./socket/chat")(io);
+
+app.use(
+  cors({
+    origen: "*",
+    credentials: true,
+    expuestosHeaders: ["Content-Length", "X-Foo", "X-Bar"],
+    methods: ["OPTIONS", "GET", "PUT", "POST", "DELETE"],
+  })
+);
+
+//Static files
+app.use(express.static(path.join(__dirname, "public")));
+//Static file declaration
+app.use(express.static(path.join(__dirname, "build/")));
+//build mode
+app.use("/", (req, res) => {
+  res.sendFile(path.join(__dirname + "build/index.html"));
+});
+
+app.get("/api", (req, res) => res.send("Home Page Chat"));
+
+http.listen(80, () => console.log("Servidor inicializado"));

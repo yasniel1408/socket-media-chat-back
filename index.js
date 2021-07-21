@@ -8,6 +8,8 @@ const servidor = http.createServer(app);
 const socketio = require("socket.io");
 const io = socketio(servidor);
 
+app.get("/", (req, res) => res.send("Home Page Chat"));
+
 //Funcionalidad de socket.io en el servidor
 io.on("connection", (socket) => {
   let nombre;

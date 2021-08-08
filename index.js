@@ -34,4 +34,6 @@ app.use("/", (req, res) => {
 
 app.get("/api", (req, res) => res.send("Home Page Chat"));
 
-http.listen(80, () => console.log("Servidor inicializado"));
+http.listen(process.env.PORT || 8080, () =>
+  console.log("Servidor inicializado")
+);

@@ -6,7 +6,7 @@ const socket = (io) => {
     socket.on("conectado", (nomb) => {
       nombre = nomb;
       //socket.broadcast.emit manda el mensaje a todos los clientes excepto al que ha enviado el mensaje
-      socket.broadcast.emit("mensajes", {
+      socket.broadcast.emit("messages", {
         nombre: nombre,
         mensaje: `${nombre} ha entrado en la sala del chat`,
       });
@@ -14,11 +14,11 @@ const socket = (io) => {
 
     socket.on("mensaje", (nombre, mensaje) => {
       //io.emit manda el mensaje a todos los clientes conectados al chat
-      io.emit("mensajes", { nombre, mensaje });
+      io.emit("messages", { nombre, mensaje });
     });
 
     socket.on("disconnect", () => {
-      io.emit("mensajes", {
+      io.emit("messages", {
         servidor: "Servidor",
         mensaje: `${nombre} ha abandonado la sala`,
       });

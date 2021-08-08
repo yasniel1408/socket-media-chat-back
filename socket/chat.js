@@ -12,7 +12,7 @@ const socket = (io) => {
       });
     });
 
-    socket.on("mensaje", (nombre, mensaje) => {
+    socket.on("message", (nombre, mensaje) => {
       //io.emit manda el mensaje a todos los clientes conectados al chat
       io.emit("messages", { nombre, mensaje });
     });
